@@ -1,78 +1,64 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { auth } from "../firebase";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-export default function NavBar() {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+function Navbar() {
+  const location = useLocation();
+  const { isLoggedIn, user, logout } = useAuth();
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
-    return () => unsub();
-  }, []);
-
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/");
-  };
+  const navItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Generate', path: '/generate' },
+    { name: 'Chat', path: '/chat' },
+    { name: 'Vision Board', path: '/vision' },
+    { name: 'Upgrade', path: '/upgrade' },
+  ];
 
   return (
-    <nav className="flex justify-center gap-6 text-sm py-4 text-gray-600 border-b">
-      <NavLink
-        to="/generate"
-        className={({ isActive }) =>
-          isActive ? "text-blue-600 font-semibold" : "hover:text-blue-400"
-        }
-      >
-        Generate
-      </NavLink>
-      <NavLink
-        to="/chat"
-        className={({ isActive }) =>
-          isActive ? "text-blue-600 font-semibold" : "hover:text-blue-400"
-        }
-      >
-        Chat
-      </NavLink>
-      <NavLink
-        to="/vision"
-        className={({ isActive }) =>
-          isActive ? "text-blue-600 font-semibold" : "hover:text-blue-400"
-        }
-      >
-        Vision Board
-      </NavLink>
+    <nav className="fixed top-0 left-0 right-0 bg-gray-900 shadow z-50">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+        <h1 className="text-2xl font-bold text-brand-blue">
+          ImportMate<span className="text-brand-orange">.</span>
+        </h1>
 
-      {user ? (
-        <button
-          onClick={handleLogout}
-          className="text-red-500 hover:text-red-700"
-        >
-          Sign Out
-        </button>
-      ) : (
-        <>
-          <NavLink
-            to="/login"
-            className={({ isActive }) =>
-              isActive ? "text-blue-600 font-semibold" : "hover:text-blue-400"
-            }
-          >
-            Sign In
-          </NavLink>
-          <NavLink
-            to="/signup"
-            className={({ isActive }) =>
-              isActive
-                ? "text-yellow-600 font-semibold"
-                : "hover:text-yellow-400"
-            }
-          >
-            Get Started
-          </NavLink>
-        </>
-      )}
+        <div className="flex space-x-4 items-center">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === item.path
+                  ? 'text-brand-orange'
+                  : 'text-white hover:text-brand-orange'
+              }`}
+            >
+              {item.name}
+            </Link>
+          ))}
+
+          {isLoggedIn ? (
+            <>
+              <Link to="/account" className="text-sm text-white hover:text-brand-orange">
+                Account
+              </Link>
+              <button onClick={logout} className="btn-secondary text-sm px-3 py-1">
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn-secondary text-sm px-3 py-1">
+                Log in
+              </Link>
+              <Link to="/signup" className="btn text-sm px-3 py-1">
+                Try It Free
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
     </nav>
   );
 }
+
+export default Navbar;

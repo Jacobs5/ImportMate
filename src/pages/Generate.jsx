@@ -1,150 +1,84 @@
-import React, { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  increment,
-  serverTimestamp,
-} from "firebase/firestore";
-import { db } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
 
-export default function Generate() {
-  const [user, setUser] = useState(null);
-  const [isPremium, setIsPremium] = useState(false);
-  const [aiUsed, setAiUsed] = useState(0);
+function Generate() {
+  const [product, setProduct] = useState('');
+  const [destination, setDestination] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [inquiry, setInquiry] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const [product, setProduct] = useState("");
-  const [destination, setDestination] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [generatedMessage, setGeneratedMessage] = useState("");
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-        const userRef = doc(db, "users", firebaseUser.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          setIsPremium(data.premium || false);
-          setAiUsed(data.aiUsed || 0);
-        }
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const generateMessage = async () => {
-    if (!product.trim() || !destination.trim() || !quantity.trim()) return;
-
-    if (!isPremium && aiUsed >= 1) {
-      setShowUpgradeModal(true);
+  const generateInquiry = async () => {
+    if (!product || !destination || !quantity) {
+      alert('Please fill in all fields.');
       return;
     }
+    setLoading(true);
+    const prompt = `Hello, we are currently sourcing ${product} for delivery to ${destination}. We're interested in ordering ${quantity} units. Could you please provide us with pricing, shipping times, and any minimum order requirements?`;
 
-    const message = `Hello, we’re currently sourcing ${product.trim()} for delivery to ${destination.trim()}. We're considering ordering ${quantity.trim()} units and would appreciate details on your MOQ, pricing, and shipping timelines. We’re looking to onboard a reliable supplier soon.`;
-    setGeneratedMessage(message);
-
-    if (user) {
-      const userRef = doc(db, "users", user.uid);
-      await setDoc(userRef, { aiUsed: increment(1) }, { merge: true });
-      setAiUsed((prev) => prev + 1);
-
-      const visionId = `${Date.now()}`;
-      await setDoc(doc(db, "users", user.uid, "vision", visionId), {
-        input: `${product}, ${destination}, ${quantity}`,
-        message,
-        timestamp: serverTimestamp(),
-      });
-    }
-  };
-
-  const goToChat = () => {
-    navigate(
-      `/chat?supplier=${Date.now()}&name=New%20Supplier&seedMessage=${encodeURIComponent(
-        generatedMessage
-      )}`
-    );
+    setTimeout(() => {
+      setInquiry(prompt);
+      setLoading(false);
+    }, 2000);
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-4 space-y-4">
-      {showUpgradeModal && (
-        <div className="bg-white border border-gray-300 p-4 rounded-md shadow-md text-center">
-          <h2 className="text-lg font-bold mb-2">
-            🔒 Upgrade to ImportMate Premium
-          </h2>
-          <p className="text-gray-700 mb-4">
-            Unlock unlimited AI-powered messages and conversions by upgrading.
-          </p>
-          <div className="flex justify-center gap-4">
-            <button className="bg-black text-white px-4 py-2 rounded-md">
-              Upgrade
-            </button>
-            <button
-              onClick={() => setShowUpgradeModal(false)}
-              className="bg-gray-200 px-4 py-2 rounded-md"
-            >
-              Not now
-            </button>
+    <div className="min-h-screen bg-gray-950 text-white p-6">
+      <div className="max-w-xl mx-auto">
+        <h1 className="text-3xl font-semibold text-blue-400 mb-6">Generate Inquiry</h1>
+
+        <div className="mb-4">
+          <label className="block text-sm text-gray-300 mb-1">Product Type</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={product}
+            onChange={(e) => setProduct(e.target.value)}
+            placeholder="e.g. iPhone 15 cases"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm text-gray-300 mb-1">Shipping Destination</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            placeholder="e.g. Canada"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm text-gray-300 mb-1">Quantity</label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder="e.g. 500"
+          />
+        </div>
+
+        <button
+          onClick={generateInquiry}
+          className="w-full py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded transition duration-200"
+        >
+          Generate
+        </button>
+
+        {loading && (
+          <div className="mt-6 text-orange-400 animate-pulse text-sm">🧠 ImportChimp is generating your message...</div>
+        )}
+
+        {inquiry && !loading && (
+          <div className="mt-6 p-4 bg-gray-800 rounded border border-gray-700">
+            <h2 className="text-blue-300 font-semibold mb-2">Generated Inquiry:</h2>
+            <p className="text-gray-200 whitespace-pre-wrap">{inquiry}</p>
           </div>
-        </div>
-      )}
-
-      <h1 className="text-2xl font-bold text-center mb-4">
-        Generate a Supplier Inquiry
-      </h1>
-
-      <input
-        type="text"
-        placeholder="What product are you sourcing?"
-        value={product}
-        onChange={(e) => setProduct(e.target.value)}
-        className="w-full border rounded-md px-4 py-2 text-black"
-      />
-
-      <input
-        type="text"
-        placeholder="Shipping destination (e.g., Canada)"
-        value={destination}
-        onChange={(e) => setDestination(e.target.value)}
-        className="w-full border rounded-md px-4 py-2 text-black"
-      />
-
-      <input
-        type="text"
-        placeholder="How many units are you interested in?"
-        value={quantity}
-        onChange={(e) => setQuantity(e.target.value)}
-        className="w-full border rounded-md px-4 py-2 text-black"
-      />
-
-      <button
-        className="w-full bg-black text-white px-4 py-2 rounded-md"
-        onClick={generateMessage}
-      >
-        Generate Inquiry
-      </button>
-
-      {generatedMessage && (
-        <div className="border rounded-md p-4 bg-white shadow-sm space-y-2">
-          <h2 className="font-bold text-lg">Generated Inquiry:</h2>
-          <p className="text-black whitespace-pre-line">{generatedMessage}</p>
-
-          <button
-            className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md"
-            onClick={goToChat}
-          >
-            Start Manufacturer Chat ➜
-          </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
+
+export default Generate;

@@ -1,83 +1,58 @@
-import { Link } from "react-router-dom";
+import React from 'react';
+import '../styles.css';
+import { Link } from 'react-router-dom';
 
-export default function Home() {
+function Home() {
   return (
-    <div className="min-h-screen bg-white text-gray-800">
-      {/* Hero Section */}
-      <section className="text-center py-20 px-4">
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-          Smart sourcing starts here.
-        </h1>
-        <p className="text-lg md:text-xl max-w-2xl mx-auto text-gray-600 mb-8">
-          ImportChimp helps beginner and expert dropshippers communicate with
-          manufacturers quickly and confidently. Generate perfect messages,
-          track replies, and save your vision — all in one place.
-        </p>
-        <div className="flex justify-center gap-4">
-          <Link
-            to="/generate"
-            className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition"
-          >
-            Get Started
-          </Link>
-          <Link
-            to="/login"
-            className="bg-gray-200 text-black px-6 py-2 rounded-md hover:bg-gray-300 transition"
-          >
-            Sign In
-          </Link>
-        </div>
-      </section>
+    <div className="container text-center py-12">
+      <h1 className="text-4xl font-bold text-white mb-4">
+        <span className="text-brand-blue">ImportMate</span><span className="text-brand-orange">.</span>
+      </h1>
 
-      {/* Features Section */}
-      <section className="bg-gray-50 py-16 px-6">
-        <h2 className="text-2xl font-bold text-center mb-10">Why ImportMate?</h2>
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-xl font-semibold mb-2">✅ Generate Perfect Inquiries</h3>
-            <p>Custom-tailored and supplier-friendly messages in one click.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-xl font-semibold mb-2">✅ Manage All Supplier Chats</h3>
-            <p>Organized, clear, and professional threads for every conversation.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-xl font-semibold mb-2">✅ Ask ImportChimp</h3>
-            <p>Your 24/7 AI dropshipping consultant built right in.</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            <h3 className="text-xl font-semibold mb-2">✅ Vision Board</h3>
-            <p>Save and organize your product opportunities visually.</p>
-          </div>
-        </div>
-      </section>
+      <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-8">
+        ImportMate is your AI-powered sourcing assistant. Effortlessly generate supplier-ready inquiry messages, manage communication, and scale your dropshipping business with clarity and speed.
+      </p>
 
-      {/* Testimonial Section */}
-      <section className="py-16 px-6 text-center">
-        <h2 className="text-2xl font-bold mb-6">What early users are saying</h2>
-        <div className="max-w-xl mx-auto bg-white shadow p-6 rounded-lg">
-          <p className="italic text-gray-700">
-            “ImportMate feels like having a sourcing pro on my team. I send
-            better messages and close faster.”
-          </p>
-          <p className="mt-4 font-semibold">Alex D., Dropshipper</p>
-        </div>
-      </section>
-
-      {/* Premium Tease */}
-      <section className="bg-black text-white py-16 text-center px-4">
-        <h2 className="text-2xl font-bold mb-4">Upgrade to Premium</h2>
-        <p className="max-w-xl mx-auto mb-6">
-          Unlock full AI-powered chat, multiple supplier threads, and full Vision
-          Board access. Let ImportMate carry your sourcing workflow.
-        </p>
-        <Link
-          to="/upgrade"
-          className="bg-white text-black px-6 py-2 rounded-md font-semibold hover:bg-gray-200 transition"
-        >
-          View Premium Features
+      <div className="flex justify-center gap-4 mb-12 flex-wrap">
+        <Link to="/generate" className="btn">
+          Try It Free
         </Link>
-      </section>
+        <Link to="/upgrade" className="btn-secondary">
+          Upgrade to Premium
+        </Link>
+      </div>
+
+      <div className="bg-gray-900 border border-gray-700 rounded p-6 max-w-4xl mx-auto mb-12">
+        <h2 className="text-xl text-brand-blue font-semibold mb-4">What You Can Do with ImportMate</h2>
+        <ul className="text-gray-300 list-disc list-inside space-y-2 text-left">
+          <li>✨ Instantly generate supplier inquiry messages using AI</li>
+          <li>💬 Manage conversations with manufacturers in one place</li>
+          <li>🔒 Unlock unlimited chats and AI guidance with Premium</li>
+          <li>🚀 Save time, reduce errors, and grow with confidence</li>
+        </ul>
+      </div>
+
+      <div className="max-w-4xl mx-auto text-left px-4">
+        <h2 className="text-xl text-brand-blue font-semibold mb-4">What Others Are Saying</h2>
+        <div className="space-y-6">
+          <div className="bg-gray-900 p-4 border border-gray-700 rounded">
+            <p className="text-gray-200 italic">"ImportMate saved me hours of back-and-forth. The inquiry it generated got a response within 15 minutes. Total game-changer."</p>
+            <p className="text-sm text-gray-400 mt-2">— Alex G., Shopify Seller</p>
+          </div>
+
+          <div className="bg-gray-900 p-4 border border-gray-700 rounded">
+            <p className="text-gray-200 italic">"I was nervous about contacting suppliers. ImportMate made it easy — now I focus on growing the store instead of writing emails."</p>
+            <p className="text-sm text-gray-400 mt-2">— Samantha T., First-time Dropshipper</p>
+          </div>
+
+          <div className="bg-gray-900 p-4 border border-gray-700 rounded">
+            <p className="text-gray-200 italic">"Honestly, this app does 90% of the communication work for me. I just review, click send, and get replies."</p>
+            <p className="text-sm text-gray-400 mt-2">— Devin K., Amazon FBA Seller</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+
+export default Home;
