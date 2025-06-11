@@ -1,5 +1,5 @@
 import React from 'react';
-import getStripe from '../utils/stripe.js';
+import getStripe from '../utils/stripe';
 
 function Upgrade() {
   const handleUpgrade = async () => {
@@ -8,7 +8,7 @@ function Upgrade() {
     const { error } = await stripe.redirectToCheckout({
       lineItems: [
         {
-          price: 'price_1RYmEKB3KzN8XjUWdDY98YPQ', // Your actual Stripe Price ID
+          price: 'price_1RYma0B3KzN8XjUWjIihZ2YC', // Your actual Stripe Price ID
           quantity: 1,
         },
       ],
